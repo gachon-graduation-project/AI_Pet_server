@@ -1,0 +1,22 @@
+# 사용할 베이스 이미지 선택 (파이썬 버전 3.9을 사용하는 예시)
+FROM python:3.9-slim
+
+# 작업 디렉터리 설정
+WORKDIR /usr/src/app
+
+# 필요한 라이브러리 설치
+RUN pip install --upgrade pip
+
+RUN pip install "fastapi[all]"
+
+# RUN pip install numpy pandas matplotlib scikit-learn redis
+
+RUN pip install torch==2.0.0+cu118 torchvision==0.15.1+cu118 --index-url https://download.pytorch.org/whl/cu118
+
+COPY requirements.txt ./
+RUN pip install -r requirements.txt
+# 애플리케이션 코드를 컨테이너 안에 복사
+COPY . .
+
+# uvicorn 실행
+CMD ["uvicorn", "route:app", "--host", "0.0.0.0", "--port", "12125"]
